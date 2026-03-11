@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
   pages: write
@@ -29,13 +32,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_TMDB_API_KEY: ${{ secrets.VITE_TMDB_API_KEY }}
+          VITE_APPWRITE_PROJECT_ID: ${{ secrets.VITE_APPWRITE_PROJECT_ID }}
+          VITE_APPWRITE_DATABASE_ID: ${{ secrets.VITE_APPWRITE_DATABASE_ID }}
 
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
