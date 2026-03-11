@@ -1,6 +1,7 @@
+import { useDebounce } from "react-use";
+import { useState, useEffect, use } from "react";
 import Card from "./components/Card";
 import Background from "./components/Background";
-import { useState, useEffect, use } from "react";
 import SearchInput from "./components/SearchInput";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
@@ -20,12 +21,23 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
-  const fetchMovies = async () => {
+  useDebounce(
+    () => {
+      setDebouncedSearchTerm(searchTerm);
+    },
+    500, // debounce delay of 500ms
+    [searchTerm],
+  );
+
+  const fetchMovies = async (query = "") => {
     setLoading(true);
     setErrorMessage("");
     try {
-      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+      const endpoint = query
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -50,12 +62,12 @@ function App() {
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    fetchMovies(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   return (
     <Background>
-      <div className="wrapper max-w-5xl mx-auto px-6 py-16 text-center">
+      <div className="max-w-5xl mx-auto px-6 py-16 text-center">
         <header className="mb-12">
           <img src="./filmes.jpg" alt="Banner" className="w-64 mx-auto mb-4" />
 
@@ -72,7 +84,7 @@ function App() {
           <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
-        <section className="all-movies space-y-8">
+        <section className="space-y-8">
           <h2 className="text-white text-2xl font-bold mb-6 text-left">
             All Movies
           </h2>
@@ -88,13 +100,9 @@ function App() {
             <p className="text-red-500 mt-4">{errorMessage}</p>
           ) : (
             //Caso contrário, mostra os filmes.
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-10">
               {movies.map((movie) => (
-                <Card
-                  key={movie.id}
-                  title={movie.title}
-                  imagem={movie.poster_path}
-                />
+                <Card key={movie.id} movie={movie} />
               ))}
             </div>
           )}
