@@ -5,12 +5,8 @@ import { Circle } from "lucide-react";
 function Card({
   movie: { title, vote_average, poster_path, release_date, original_language },
 }) {
-
   return (
-    <div
-      className="bg-gray-800 rounded-xl shadow-md p-6 w-64 hover:shadow-xl transition flex flex-col gap-4"
-      onClick={() => setCount(count + 1)}
-    >
+    <div className="bg-gray-800 rounded-xl shadow-md p-6 w-full hover:shadow-xl transition flex flex-col gap-4">
       <img
         src={
           poster_path
@@ -18,7 +14,7 @@ function Card({
             : "https://collections.lacma.org/sites/default/files/styles/medium/public/art-placeholder.jpg?itok=T4uSqLsE"
         }
         alt={title}
-        className="w-full h-96 object-cover rounded-lg"
+        className="w-full aspect-[2/3] object-cover rounded-lg"
       />
 
       <div className="mt-4">

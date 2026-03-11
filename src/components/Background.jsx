@@ -5,7 +5,7 @@ function Background({ children }) {
   const items = Array.from({ length: 30 });
 
   return (
-    <div className="relative w-screen min-h-screen bg-black overflow-hidden p-2">
+    <div className="relative w-full min-h-screen bg-black overflow-x-hidden p-2">
       {items.map((_, i) => {
         const Icon = icons[Math.floor(Math.random() * icons.length)];
 

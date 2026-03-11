@@ -21,13 +21,12 @@ const API_OPTIONS = {
 function App() {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const [movies, setMovies] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const [trendingMovies, setTrendingMovies] = useState([]);
-  
 
   useDebounce(
     () => {
@@ -123,18 +122,15 @@ function App() {
             All Movies
           </h2>
 
-          {/* Se estiver carregando, mostra um spinner. */}
           {loading ? (
             <div className="flex flex-col items-center gap-3 py-10">
               <div className="w-10 h-10 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
               <p className="text-white">Loading movies...</p>
             </div>
-          ) : //  Se tiver erro, mostra a mensagem de erro.
-          errorMessage ? (
+          ) : errorMessage ? (
             <p className="text-red-500 mt-4">{errorMessage}</p>
           ) : (
-            //Caso contrário, mostra os filmes.
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-10">
+            <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
               {movies.map((movie) => (
                 <Card key={movie.id} movie={movie} />
               ))}
