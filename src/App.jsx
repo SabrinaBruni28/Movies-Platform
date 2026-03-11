@@ -3,6 +3,8 @@ import { useState, useEffect, use } from "react";
 import Card from "./components/Card";
 import Background from "./components/Background";
 import SearchInput from "./components/SearchInput";
+import { updateSearchCount, getTrendingMovies } from "./appwrite";
+import Trending from "./components/Trending";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 
@@ -17,11 +19,15 @@ const API_OPTIONS = {
 };
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const [movies, setMovies] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  
 
   useDebounce(
     () => {
@@ -51,8 +57,13 @@ function App() {
         setMovies([]);
         return;
       }
-      console.log(data);
+
       setMovies(data.results || []);
+
+      if (query && data.results && data.results.length > 0) {
+        const topResult = data.results[0];
+        updateSearchCount(query, topResult); // Update search count in Appwrite with the top search result
+      }
     } catch (error) {
       console.error("Error fetching movies:", error);
       setErrorMessage("Failed to fetch movies. Please try again later.");
@@ -61,9 +72,22 @@ function App() {
     }
   };
 
+  const loadTrendingMovies = async () => {
+    try {
+      const trending = await getTrendingMovies();
+      setTrendingMovies(trending);
+    } catch (error) {
+      console.error("Error loading trending movies:", error);
+    }
+  };
+
   useEffect(() => {
     fetchMovies(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    loadTrendingMovies();
+  }, []);
 
   return (
     <Background>
@@ -83,6 +107,16 @@ function App() {
 
           <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
+
+        {trendingMovies.length > 0 && (
+          <section className="space-y-8 mb-16">
+            <h2 className="text-white text-2xl font-bold text-left">
+              Trending Movies
+            </h2>
+
+            <Trending trendingMovies={trendingMovies} />
+          </section>
+        )}
 
         <section className="space-y-8">
           <h2 className="text-white text-2xl font-bold mb-6 text-left">

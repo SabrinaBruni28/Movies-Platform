@@ -5,8 +5,6 @@ import { Circle } from "lucide-react";
 function Card({
   movie: { title, vote_average, poster_path, release_date, original_language },
 }) {
-  const [count, setCount] = useState(0);
-  const [hasliked, setHasLiked] = useState(false);
 
   return (
     <div
@@ -46,13 +44,6 @@ function Card({
           <p className="text-gray-400">
             {release_date ? release_date.slice(0, 4) : "N/A"}
           </p>
-
-          <button
-            onClick={() => setHasLiked(!hasliked)}
-            className="text-2xl hover:scale-110 transition"
-          >
-            {hasliked ? "❤️" : "🤍"}
-          </button>
         </div>
       </div>
     </div>
