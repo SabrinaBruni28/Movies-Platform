@@ -21,12 +21,13 @@ const API_OPTIONS = {
 function App() {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
+  
   const [movies, setMovies] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+  
   const [trendingMovies, setTrendingMovies] = useState([]);
+  
 
   useDebounce(
     () => {
@@ -133,7 +134,7 @@ function App() {
             <p className="text-red-500 mt-4">{errorMessage}</p>
           ) : (
             //Caso contrário, mostra os filmes.
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 md:gap-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-10">
               {movies.map((movie) => (
                 <Card key={movie.id} movie={movie} />
               ))}
